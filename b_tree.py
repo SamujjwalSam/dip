@@ -23,8 +23,7 @@ def put(q, user_input):
     elif user_input == 2:
         print "Removed: " + getattr(queue_list, 'q_out')(q)  # using getattr
         # calling the method in module queue_list; alt: queue_list.q_out(q)
-    else:
-        print q
+    print q
     return 1
 
 

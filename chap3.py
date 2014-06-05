@@ -10,8 +10,6 @@ script options
 author(s) : Samujjwal Ghosh
 """
 import sys
-import __builtin__
-import string
 
 
 def func(param):
