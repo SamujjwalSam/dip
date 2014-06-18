@@ -6,7 +6,7 @@ __author__ = 'Samujjwal_Ghosh'
 import sys
 
 
-def q_in(q_i):
+def q_in(q_i) :
     """
     inserts a value in the queue
     :param q_i:
@@ -16,40 +16,34 @@ def q_in(q_i):
     q_i.insert(0, val)
 
 
-def q_out(q_o):
+def q_out(q_o) :
     """
     deletes a value from queue
     :param q_o:
-    :return:
+    :return ret:
     """
-    if q_o.__len__():
-        #print "Removed: " + q_o[-1]
+    if q_o.__len__() :
         ret = q_o[-1]
         del q_o[-1]
         return ret
-    else:
+    else :
         return None
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' :
     q = []
-    user_input = raw_input("Enter choice; 0:exit, 1:insert, 2:delete, "
-                           "3:print : ")
-    while user_input:
+    while 1 :
+        user_input = raw_input("Enter choice; 1:insert, 2:delete, 3:print : ")
         assert isinstance(user_input, object)
-        if user_input == '0':
-            sys.exit(1)
-        elif user_input == '1':
+        if user_input == '1' :
             q_in(q)
-        elif user_input == '2':
+        elif user_input == '2' :
             del_val = q_out(q)
-            if del_val is None:
+            if del_val is None :
                 print "Queue empty."
-            else:
+            else :
                 print "Removed: " + del_val
-        elif user_input == '3':
+        elif user_input == '3' :
             print q
-        else:
-            print "Invalid input; printing queue %s" % q
-        user_input = raw_input("Enter choice; 0:exit, 1:insert, 2:delete, "
-                           "3:print : ")
+        else :
+            sys.exit(1)
