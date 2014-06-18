@@ -28,11 +28,13 @@ def q_out(q_o):
         del q_o[-1]
         return ret
     else:
-        print "Queue empty."
+        return None
+
 
 if __name__ == '__main__':
     q = []
-    user_input = raw_input("Enter choice; 0:exit, 1:insert, 2:delete: ")
+    user_input = raw_input("Enter choice; 0:exit, 1:insert, 2:delete, "
+                           "3:print : ")
     while user_input:
         assert isinstance(user_input, object)
         if user_input == '0':
@@ -40,7 +42,14 @@ if __name__ == '__main__':
         elif user_input == '1':
             q_in(q)
         elif user_input == '2':
-            print "Removed: " + q_out(q)
-        else:
+            del_val = q_out(q)
+            if del_val is None:
+                print "Queue empty."
+            else:
+                print "Removed: " + del_val
+        elif user_input == '3':
             print q
-        user_input = raw_input("Enter choice; 0:exit, 1:insert, 2:delete: ")
+        else:
+            print "Invalid input; printing queue %s" % q
+        user_input = raw_input("Enter choice; 0:exit, 1:insert, 2:delete, "
+                           "3:print : ")
