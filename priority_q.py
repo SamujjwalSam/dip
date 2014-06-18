@@ -17,14 +17,13 @@ def priority_in(priority_q) :
     priority = input("Enter priority: ")
     if types.IntType == type(priority) :
         if priority in priority_q.keys() :
-            overwrite = input("Priority already exists; Overwrite? No:0 "
-                              "Yes:others; Default: No")
-            if not overwrite :
+            overwrite = raw_input("Priority already exists; Overwrite? Y/N; "
+                                  "Default:Y : ")
+            if overwrite.lower() == 'n' :
                 return
+
         value = input("Enter value: ")
         priority_q[priority] = value
-
-
     else :
         print "priority must be integer."
 
@@ -36,6 +35,7 @@ def priority_out(priority_q) :
     :return:
     """
     if priority_q.__len__() :
+        print "will be deleted: %s" % priority_q[max(priority_q.keys())]
         del priority_q[max(priority_q.keys())]
     else :
         return None
