@@ -35,16 +35,26 @@ def priority_out(priority_q) :
     :return:
     """
     if priority_q.__len__() :
-        print "will be deleted: %s" % priority_q[max(priority_q.keys())]
-        del priority_q[max(priority_q.keys())]
+        del_prio = max(priority_q.keys())
+        del_val = priority_q[del_prio]
+        del priority_q[del_prio]
+        print "Deleted Lowest priority [%d] value from Queue: [%s]" % (del_prio,
+                                                                       del_val)
     else :
+        print "Queue empty."
         return None
 
 
 if __name__ == "__main__" :
     priority_q = {}
     while 1 :
-        user_input = input("Enter choice; 1:insert, 2:delete, 3:print : ")
+        try :
+            user_input = int(raw_input("Enter choice; 1:insert, 2:delete,"
+                                       " 3:print : "))
+        except ValueError :
+            print "Empty input; Exiting..."
+            sys.exit(1)
+
         if user_input == 1 :
             priority_in(priority_q)
         elif user_input == 2 :
@@ -52,4 +62,5 @@ if __name__ == "__main__" :
         elif user_input == 3 :
             print priority_q
         else :
+            print "Invalid input; Exiting..."
             sys.exit(1)
