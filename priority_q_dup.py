@@ -1,8 +1,20 @@
 # coding=utf-8
 """
-Implementing a priority queue using a dictionary variable
-__note__  = 'duplicate priority can not exist'
-__author__ = 'Samujjwal_Ghosh'
+INFO: Implementing a priority queue
+
+DESC: a Priority queue using lists with duplicate priorities
+
+script options
+--------------
+--param : parameter list
+
+Created by Samujjwal_Ghosh on 18-Jun-14.
+
+__author__ : Samujjwal Ghosh
+__version__ = ": 1 $"
+__date__ = "$"
+__copyright__ = "Copyright (c) 2014 Samujjwal Ghosh"
+__license__ = "Python"
 """
 
 import sys
@@ -28,7 +40,7 @@ def priority_in(priority_q) :
             if overwrite.lower() == 'n' :
                 return
 
-        try:
+        try :
             value = int(raw_input("Enter value: "))
             priority_q[priority] = value
         except ValueError :
@@ -42,7 +54,7 @@ def priority_out(priority_q) :
     """
     deletes the lowest priority value from queue
     :param priority_q:
-    :return None:
+    :return:
     """
     if priority_q.__len__() :
         del_prio = max(priority_q.keys())
@@ -56,20 +68,14 @@ def priority_out(priority_q) :
 
 
 if __name__ == "__main__" :
-    priority_q = {}
+    priority_q = []
     while 1 :
         try :
             user_input = int(raw_input("Enter choice; 1:insert, 2:delete,"
                                        " 3:print : "))
         except ValueError :
-            try:
-                retry = raw_input("Empty value entered; retry? (y/n; "
-                                  "default:n): ")
-                if retry == 'y':
-                    continue
-                sys.exit(1)
-            except ValueError:
-                sys.exit(1)
+            print "Empty input; Exiting..."
+            sys.exit(1)
 
         if user_input == 1 :
             priority_in(priority_q)
@@ -78,15 +84,5 @@ if __name__ == "__main__" :
         elif user_input == 3 :
             print priority_q
         else :
-            try :
-                user_input = int(raw_input("Invalid Input; retry? (y/n; "
-                                           "default:n): "))
-            except ValueError :
-                try:
-                    retry = raw_input("Empty value entered; retry? (y/n; "
-                                      "default:n): ")
-                    if retry == 'y':
-                        continue
-                    sys.exit(1)
-                except ValueError:
-                    sys.exit(1)
+            print "Invalid input; Exiting..."
+            sys.exit(1)
