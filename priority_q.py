@@ -22,7 +22,6 @@ __methods__     :
 """
 
 import sys
-import types
 
 import sam_modules
 
@@ -33,27 +32,17 @@ def priority_in(priority_q):
     :param priority_q:
     :return:
     """
-    try:
-        priority = int(raw_input("Enter priority: "))
-    except ValueError:
-        print "Empty Priority; Exiting..."
-        sys.exit(1)
+    priority = sam_modules.int_input("Enter priority: ").val
 
-    if types.IntType == type(priority):
-        if priority in priority_q.keys():
-            overwrite = raw_input("Priority already exists; Overwrite? Y/N; "
-                                  "Default:Y : ")
-            if overwrite.lower() == 'n':
-                return
+    if priority in priority_q.keys():
+        overwrite = sam_modules.str_input("Priority already exists; Overwrite? "
+                                          "Y/N; Default:Y : ").val
+        if overwrite.lower() == 'n':
+            return
 
-        try:
-            value = int(raw_input("Enter value: "))
-            priority_q[priority] = value
-        except ValueError:
-            print "Empty Value; Exiting..."
-            sys.exit(1)
-    else:
-        print "priority must be integer."
+    value = sam_modules.int_input("Enter value: ")
+    if value.call_status == 'PASS':
+        priority_q[priority] = value.val
 
 
 def priority_out(priority_q):
@@ -75,14 +64,15 @@ def priority_out(priority_q):
 
 if __name__ == "__main__":
     priority_q = {}
-    user_input = sam_modules.int_input("Enter choice; 1:insert, 2:delete,"
-                                       " 3:print : ")
-    if user_input == 1:
-        priority_in(priority_q)
-    elif user_input == 2:
-        priority_out(priority_q)
-    elif user_input == 3:
-        print priority_q
-    else:
-        print "Invalid input; Exiting..."
-        sys.exit(1)
+    while 1:
+        user_input = sam_modules.int_input("Enter choice; 1:insert, 2:delete,"
+                                           " 3:print : ").val
+        if user_input == 1:
+            priority_in(priority_q)
+        elif user_input == 2:
+            priority_out(priority_q)
+        elif user_input == 3:
+            print priority_q
+        else:
+            print "Invalid input; Exiting..."
+            sys.exit(1)

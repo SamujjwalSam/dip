@@ -27,6 +27,7 @@ __methods__     :
     int_input (string) : takes integer input from console
     str_input (string) : takes string input from console
     open_file (string, string='r', string=None, int=0, int=0) : opens file
+    print_log (string) : prints to console and logs to a file
 
 """
 
@@ -308,7 +309,7 @@ def open_file(file_name, mode='r', content=None, print_file=0, close=0):
 
     if content and (mode.lower() != 'r' or mode.lower() != 'rb'):  # will write
         # only if content is defined and mode is not 'r' or 'rb'
-        print "writing content \"[%s]\" to file [%s]." % (content, file_name)
+        print "writing content to file [%s]." % file_name
         try:
             val.write(content)
             msg = 'Written content successfully.'
@@ -324,6 +325,45 @@ def open_file(file_name, mode='r', content=None, print_file=0, close=0):
     return ReturnValue(call_pass, val=val, msg=msg)
 
 
+def print_log(log_string, log_only=0):
+    """
+    Prints to console and logs to a file
+    :param log_only: will not print if 1
+        Type: int
+        Optional
+        Read Only
+    :param log_string: string to log in file <sam_modules_log.txt>
+        Type: str
+        Required
+        Read Only
+    :return Object: return object of type [ReturnValue]
+        Type: object
+    """
+    method_name = '##' + os.path.basename(__file__) + ':print_log: '
+    print method_name
+    ReturnValue.call_stack.append(method_name)
+
+    if not log_string:
+        msg = "Empty string passed."
+        return ReturnValue(call_status=call_err, msg=msg)
+
+    tc = check_params(tuple([log_string]),
+                      tuple(['StringType']),
+                      tuple([1]))
+    if (tc.call_status == call_fail) or (tc.call_status == call_err):
+        return ReturnValue(call_status=tc.call_status, msg=tc.msg)
+
+    if __name__ == "__main__":  # will always print when unit testing
+        log_only = 1
+
+    if log_only == 0:
+        print log_string
+    open_file(file_name='sam_modules_log.txt', mode='a+', content=log_string,
+              close=1)
+    msg = 'Logged successfully.'
+    return ReturnValue(call_pass, val=1, msg=msg)
+
+
 if __name__ == "__main__":  # for unit testing purposes only; will not execute
     # if module API call.
     # user_input = int_input("Enter a number: ")
@@ -336,13 +376,11 @@ if __name__ == "__main__":  # for unit testing purposes only; will not execute
     # print str_input("Enter a string: ")
     # from time import ctime
     # print str(ctime())
-    f = open_file('READ.txt', "w+", "samujjwal\n", print_file=1)
-    print f.call_status
-    print f.msg
+    # f = open_file('READ.txt', "w+", "samujjwal\n", print_file=1)
+    # print f.call_status
+    # print f.msg
 
-    f.val.write("hello sam")
-    f.val.seek(0)
-    print f.val.read()
+    pl = print_log('logging...', log_only=0)
 
     # f = open('hello.txt', 'w+')
     #
