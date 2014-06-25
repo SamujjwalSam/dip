@@ -1,41 +1,53 @@
 # coding=utf-8
 # !/usr/bin/python
 """
-INFO: Contains basic functionality like taking user input, opening file
-DESC:
-Methods:
-    is_empty (list)
+__synopsis__    : Contains basic functionality like taking user input, opening
+                  file
+__description__ :
+__project__     : dip
+__author__      : Samujjwal_Ghosh
+__version__     : " 1.0 "
+__date__        : "25-Jun-14"
+__copyright__   : "Copyright (c) 2014 Samujjwal_Ghosh"
+__license__     : "Python"
 
-script options
---------------
---param : parameter list
+__classes__     :
+    ReturnValue(object) : Contains return values of the call to sam_modules
+        call_stack = []
+        __init__(string, object=None, string='', string='')
 
-Created by Samujjwal_Ghosh on 19-Jun-14.
+__variables__   :
+    call_pass = string : represents call pass
+    call_fail = string : represents call fail
+    call_err  = string : represents call error
 
-__author__ : Samujjwal Ghosh
-__version__ = ": 1 $"
-__date__ = "$"
-__copyright__ = "Copyright (c) 2014 Samujjwal Ghosh"
-__license__ = "Python"
+__methods__     :
+    is_empty (list) :
+    check_params (tuple, tuple, tuple) : check parameters types
+    int_input (string) : takes integer input from console
+    str_input (string) : takes string input from console
+    open_file (string, string='r', string=None, int=0, int=0) : opens file
+
 """
 
 import os
 import types
 import inspect
 
+
 call_pass = 'PASS'
 call_fail = 'FAIL'
 call_err = 'ERROR'
 
 
-class ReturnValue(object) :
+class ReturnValue(object):
     """
     Contains return values of the call
     """
 
     call_stack = []
 
-    def __init__(self, call_status, val=None, msg="", method_msg=None) :
+    def __init__(self, call_status, val=None, msg='', method_msg=''):
         self.call_status = call_status
         self.msg = msg
         self.val = val
@@ -43,7 +55,7 @@ class ReturnValue(object) :
         self.method_msg = method_msg
 
 
-def is_empty(param_list) :
+def is_empty(param_list):
     """
 
     :param param_list:
@@ -55,25 +67,26 @@ def is_empty(param_list) :
 
     msg = "[%s]: non-empty" % inspect.currentframe().f_back.f_lineno
 
-    if not param_list.__len__() :
+    if not param_list.__len__():
         msg = "[%s]: Empty value provided for <param_list>."
         return ReturnValue(call_status=call_err, msg=msg)
-    elif param_list.__len__() == 1 :
-        if param_list :
+    elif param_list.__len__() == 1:
+        if param_list:
             msg = "[%s]: [%s] non-empty." % (inspect.currentframe(
             ).f_back.f_lineno, param_list)
             return ReturnValue(call_status=call_pass, msg=msg)
-        else :
+        else:
             msg = "[%s]: [%s] Empty." % (
-            inspect.currentframe().f_back.f_lineno, param_list)
+                inspect.currentframe().f_back.f_lineno, param_list)
             return ReturnValue(call_status=call_fail, msg=msg)
-    else :
-        for param in param_list :
-            if not param :
-                msg = "[%s]: Empty value provided for parameter [%s]" % \
+    else:
+        for param in param_list:
+            if not param:
+                msg = "[%s]: Empty value provided for parameter [%s]" %\
                       inspect.currentframe().f_back.f_lineno, param
                 return ReturnValue(call_status=call_fail, msg=msg)
     return ReturnValue(call_status=call_fail, msg=msg)
+
 
 def check_params(param_values, param_types, required):
     """
@@ -97,38 +110,48 @@ def check_params(param_values, param_types, required):
     print method_name
     ReturnValue.call_stack.append(method_name)
 
+    if not (param_values.__len__() == param_types.__len__() ==
+            required.__len__()):
+        print "Length of param lists passed are not same."
+        msg = "Length of param lists passed are not same."
+        return ReturnValue(call_status=call_err, msg=msg)
+
     if (not isinstance(param_values, types.TupleType)) or (
             not isinstance(param_types, types.TupleType)) or (
             not isinstance(required, types.TupleType)):
-        msg = "[%s]: Provided parameters are not <tuple> type." % \
+        print "[%s]: Provided parameters are not <tuple> type." %\
+              inspect.currentframe().f_back.f_lineno
+        msg = "[%s]: Provided parameters are not <tuple> type." %\
               inspect.currentframe().f_back.f_lineno
         return ReturnValue(call_status=call_err, msg=msg)
 
     if (not param_values) or (not param_types) or (not required):
+        print "[%s]: Empty tuple list provided for Required "\
+              "parameter." % inspect.currentframe().f_back.f_lineno
         msg = "[%s]: Empty tuple list provided for Required "\
               "parameter." % inspect.currentframe().f_back.f_lineno
         return ReturnValue(call_status=call_err, msg=msg)
     i = 0
-    for param_val, param_type in zip(param_values, param_types) :
+    for param_val, param_type in zip(param_values, param_types):
         if not param_val:
             if required[i] == 1:
-                msg = "Empty value provided for required parameter no: [%d]." \
+                msg = "Empty value provided for required parameter no: [%d]."\
                       % i
                 return ReturnValue(call_status=call_fail, val=i, msg=msg)
 
-        if type(param_val) != getattr(types, param_type) :  # checking type
+        if type(param_val) != getattr(types, param_type):  # checking type
             # of param_val with builtin types of module types for all elements
             msg = "[%s]: Type mismatch for param no: [%d]; Expected: [%s]"\
                   " Provided: [%s]" % (
-                  inspect.currentframe().f_back.f_lineno, i, param_type,
-                  type(param_val))
+                      inspect.currentframe().f_back.f_lineno, i, param_type,
+                      type(param_val))
             return ReturnValue(call_status=call_fail, val=i, msg=msg)
         i += 1
     return ReturnValue(call_status=call_pass, msg='Type check successful for '
                                                   'all parameters.')
 
 
-def int_input(to_print) :
+def int_input(to_print):
     """
     Takes integer input from console
     :param to_print: Prints
@@ -142,32 +165,34 @@ def int_input(to_print) :
     print method_name
     ReturnValue.call_stack.append(method_name)
 
-    if not to_print :
+    if not to_print:
         msg = "Empty string passed."
         return ReturnValue(call_status=call_err, msg=msg)
 
-    tc = check_params(tuple([to_print]), tuple(['StringType']), tuple([1]))
-    if (tc.call_status == call_fail) or (tc.call_status == call_err) :
+    tc = check_params(tuple([to_print]),
+                      tuple(['StringType']),
+                      tuple([1]))
+    if (tc.call_status == call_fail) or (tc.call_status == call_err):
         return ReturnValue(call_status=tc.call_status, msg=tc.msg)
 
-    while 1 :
-        try :
+    while 1:
+        try:
             val = int(raw_input(to_print))
             msg = "[%s]: Retrieved value [%s] successfully." % (
                 inspect.currentframe().f_back.f_lineno, val)
             return ReturnValue(call_status=call_pass, val=val, msg=msg)
-        except ValueError :
+        except ValueError:
             retry = raw_input("Empty or non-integer value entered; retry? ("
                               "y/n; default:n): ")
-            if retry == 'y' :
+            if retry == 'y':
                 continue
-            else :
+            else:
                 msg = "[%s]: Entered [%s]." % (
                     inspect.currentframe().f_back.f_lineno, retry)
                 return ReturnValue(call_status=call_fail, msg=msg)
 
 
-def str_input(to_print) :
+def str_input(to_print):
     """
     Takes string input from console
     :param to_print: Prints
@@ -181,27 +206,30 @@ def str_input(to_print) :
     print method_name
     ReturnValue.call_stack.append(method_name)
 
-    if not to_print :
+    if not to_print:
         msg = "Empty string passed."
         return ReturnValue(call_status=call_err, msg=msg)
 
-    tc = check_params(tuple([to_print]), tuple(['StringType']), tuple([1]))
-    if (tc.call_status == call_fail) or (tc.call_status == call_err) :
+    tc = check_params(tuple([to_print]),
+                      tuple(['StringType']),
+                      tuple([1]))
+    if (tc.call_status == call_fail) or (tc.call_status == call_err):
         return ReturnValue(call_status=tc.call_status, msg=tc.msg)
 
-    while 1 :
+    while 1:
         val = raw_input(to_print)
-        if val == "" :
+        if val == "":
             retry = raw_input("Empty value entered; retry? (y/n; default:n): ")
-            if retry == 'y' :
+            if retry == 'y':
                 continue
-            else :
+            else:
                 msg = "[%s]: Entered [%s]." % (
                     inspect.currentframe().f_back.f_lineno, retry)
                 return ReturnValue(call_fail, msg=msg)
         return ReturnValue(call_pass, val=val)
 
-def file_check(file_name, mode='r', content=None, print_file=0, close=0):
+
+def open_file(file_name, mode='r', content=None, print_file=0, close=0):
     """
     takes file name check its existence and returns file handle
     :param close: closes the file after operation.
@@ -215,7 +243,7 @@ def file_check(file_name, mode='r', content=None, print_file=0, close=0):
         Read Only
         Default: 0
     :param content: if not None, then append / writes [content] to the file if
-    mode contains 'a' / 'w' and is not 'r'.
+        mode contains 'a' / 'w' and is not 'r'.
         Type: str
         Optional
         Read Only
@@ -232,12 +260,13 @@ def file_check(file_name, mode='r', content=None, print_file=0, close=0):
     :return Object: returns file handle within object of [ReturnValue]
         Type: object
     """
-    method_name = '##' + os.path.basename(__file__) + ':file_check: '
+    method_name = '##' + os.path.basename(__file__) + ':open_file: '
     print method_name
     ReturnValue.call_stack.append(method_name)
 
-    check_params(tuple([file_name, mode, content, print_file, close]), tuple(
-        ['StringType', 'StringType', 'StringType', 'IntType', 'IntType']),
+    check_params(tuple([file_name, mode, content, print_file, close]),
+                 tuple(['StringType', 'StringType', 'StringType', 'IntType',
+                        'IntType']),
                  tuple([1, 0, 0, 0, 0]))
 
     if print_file and mode.find('r') != -1:
@@ -248,7 +277,7 @@ def file_check(file_name, mode='r', content=None, print_file=0, close=0):
             if mode.find('b') != -1:  # will open in binary if mode contains [b]
                 i_mode = 'rb'
                 p_m = "Printing file [%s] in binary mode: " % file_name
-            else :
+            else:
                 i_mode = 'r'
                 p_m = "Printing file [%s] in text mode: " % file_name
             try:  # opening the file in read mode to print the file
@@ -256,14 +285,14 @@ def file_check(file_name, mode='r', content=None, print_file=0, close=0):
                 print p_m
             except IOError as err:
                 msg = "Could not read file [%s]; [%s] occurred." % (
-                file_name, err)
+                    file_name, err)
                 return ReturnValue(call_err, msg=msg)
             try:  # printing the file
                 print "[%s]" % val.read()
             except IOError as err:
                 print "Unable to read file; [%s] occurred." % err
             val.close()
-        else :
+        else:
             print "File [%s] does not exist; can not print." % file_name
 
     try:
@@ -273,18 +302,19 @@ def file_check(file_name, mode='r', content=None, print_file=0, close=0):
         msg = "Failed to open file [%s]; [%s] occurred." % (file_name, err)
         return ReturnValue(call_err, msg=msg)
     except ValueError as err:
-        msg = "Failed to open file [%s]; [%s] occurred." % (file_name, err)
+        msg = "Failed to open file [%s] with mode [%s]; [%s] occurred." % (
+            file_name, mode, err)
         return ReturnValue(call_fail, msg=msg)
 
     if content and (mode.lower() != 'r' or mode.lower() != 'rb'):  # will write
         # only if content is defined and mode is not 'r' or 'rb'
         print "writing content \"[%s]\" to file [%s]." % (content, file_name)
-        try :
+        try:
             val.write(content)
             msg = 'Written content successfully.'
         except IOError as err:
             msg = "Failed to write to file [%s]; [%s] occurred." % (
-            file_name, err)
+                file_name, err)
             val.close()
             return ReturnValue(call_fail, msg=msg)
     if close:
@@ -294,19 +324,19 @@ def file_check(file_name, mode='r', content=None, print_file=0, close=0):
     return ReturnValue(call_pass, val=val, msg=msg)
 
 
-if __name__ == "__main__" :  # for unit testing purposes only; will not execute
+if __name__ == "__main__":  # for unit testing purposes only; will not execute
     # if module API call.
-    #user_input = int_input("Enter a number: ")
-    #user_input = str_input('Enter a string: ')
+    # user_input = int_input("Enter a number: ")
+    # user_input = str_input('Enter a string: ')
     # print user_input.call_stack
-    #print user_input.call_status
-    #print user_input.msg
+    # print user_input.call_status
+    # print user_input.msg
     #print user_input.val
 
     # print str_input("Enter a string: ")
     # from time import ctime
     # print str(ctime())
-    f = file_check('READ.txt', "wr+", "samujjwal\n", print_file=1)
+    f = open_file('READ.txt', "w+", "samujjwal\n", print_file=1)
     print f.call_status
     print f.msg
 
