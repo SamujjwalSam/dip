@@ -4,46 +4,70 @@ Implementing a Queue using a list type variable
 __author__ = 'Samujjwal_Ghosh'
 """
 import sys
+import sam_modules
+
+call_pass = tuple(['PASS'])
+call_fail = tuple(['FAIL'])
+call_err = tuple(['ERROR'])
 
 
-def q_in(q_i) :
+class Q(object):
     """
-    inserts a value in the queue
-    :param q_i:
-    :return:
+    Class used as queue
     """
-    val = raw_input("Enter value: ")
-    q_i.insert(0, val)
+
+    def __init__(self):
+        self.q = []
+
+    def q_in(self, v=None):
+        """
+        inserts a value in the queue
+        :param v:
+        :return:
+        """
+        if v:
+            self.q.insert(0, v)
+        else:
+            val = sam_modules.str_input("Enter value: ")
+            if val.call_status == call_pass:
+                self.q.insert(0, val.val)
+
+    def q_out(self):
+        """
+        deletes a value from queue
+        :return ret:
+        """
+        if self.q.__len__():
+            ret = self.q[-1]
+            try:
+                del self.q[-1]
+            except:
+                pass
+            return ret
+        else:
+            return None
+
+    def q_print(self):
+        """
+        prints the q
+        """
+        print self.q
 
 
-def q_out(q_o) :
-    """
-    deletes a value from queue
-    :param q_o:
-    :return ret:
-    """
-    if q_o.__len__() :
-        ret = q_o[-1]
-        del q_o[-1]
-        return ret
-    else :
-        return None
-
-
-if __name__ == '__main__' :
-    q = []
-    while 1 :
-        user_input = raw_input("Enter choice; 1:insert, 2:delete, 3:print : ")
-        assert isinstance(user_input, object)
-        if user_input == '1' :
-            q_in(q)
-        elif user_input == '2' :
-            del_val = q_out(q)
-            if del_val is None :
+if __name__ == '__main__':
+    queue = Q()
+    while 1:
+        user_input = sam_modules.str_input("Enter choice; 1:insert, 2:delete, "
+                                           "3:print : ")
+        if user_input.val == '1':
+            queue.q_in()
+        elif user_input.val == '2':
+            del_val = queue.q_out()
+            if del_val is None:
                 print "Queue empty."
-            else :
-                print "Removed: " + del_val
-        elif user_input == '3' :
-            print q
-        else :
+            else:
+                print "Removed: [%s]" % del_val
+        elif user_input.val == '3':
+            print queue.q_print()
+        else:
             sys.exit(1)

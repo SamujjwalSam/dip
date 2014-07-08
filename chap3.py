@@ -34,6 +34,7 @@ if __name__ == "__main__":
     print "dict:" + dct["b"]
     dct["c"] = "2"
     print dct
+    print dct["a"]
     
     lst = ["l1", "l2", "l3"]  # list, methods: join, insert, append
     print [elm for elm in lst]  # list comprehension

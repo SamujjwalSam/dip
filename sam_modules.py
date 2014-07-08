@@ -14,7 +14,7 @@ __license__     : "Python"
 __classes__     :
     ReturnValue(object) : Contains return values of the call to sam_modules
         call_stack = []
-        __init__(string, object=None, string='', string='')
+        __init__(tuple, object=None, string='', string='')
 
 __variables__   :
     call_pass = string : represents call pass
@@ -32,13 +32,14 @@ __methods__     :
 """
 
 import os
+import string
 import types
 import inspect
 
 
-call_pass = 'PASS'
-call_fail = 'FAIL'
-call_err = 'ERROR'
+call_pass = tuple(['PASS'])
+call_fail = tuple(['FAIL'])
+call_err = tuple(['ERROR'])
 
 
 class ReturnValue(object):
@@ -62,9 +63,9 @@ def is_empty(param_list):
     :param param_list:
     :return:
     """
-    method_name = '##' + os.path.basename(__file__) + ':is_empty: '
-    print method_name
-    ReturnValue.call_stack.append(method_name)
+    routine_name = '##' + os.path.basename(__file__) + ':is_empty: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
 
     msg = "[%s]: non-empty" % inspect.currentframe().f_back.f_lineno
 
@@ -107,9 +108,9 @@ def check_params(param_values, param_types, required):
     :return Object: return object of type [ReturnValue]
         Type: object
     """
-    method_name = '##' + os.path.basename(__file__) + ':check_params: '
-    print method_name
-    ReturnValue.call_stack.append(method_name)
+    routine_name = '##' + os.path.basename(__file__) + ':check_params: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
 
     if not (param_values.__len__() == param_types.__len__() ==
             required.__len__()):
@@ -134,7 +135,7 @@ def check_params(param_values, param_types, required):
         return ReturnValue(call_status=call_err, msg=msg)
     i = 0
     for param_val, param_type in zip(param_values, param_types):
-        if not param_val:
+        if not str(param_val):
             if required[i] == 1:
                 msg = "Empty value provided for required parameter no: [%d]."\
                       % i
@@ -162,9 +163,9 @@ def int_input(to_print):
     :return Object: return object of type [ReturnValue]
         Type: object
     """
-    method_name = '##' + os.path.basename(__file__) + ':int_input: '
-    print method_name
-    ReturnValue.call_stack.append(method_name)
+    routine_name = '##' + os.path.basename(__file__) + ':int_input: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
 
     if not to_print:
         msg = "Empty string passed."
@@ -203,9 +204,9 @@ def str_input(to_print):
     :return Object: return object of type [ReturnValue]
         Type: object
     """
-    method_name = '##' + os.path.basename(__file__) + ':str_input: '
-    print method_name
-    ReturnValue.call_stack.append(method_name)
+    routine_name = '##' + os.path.basename(__file__) + ':str_input: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
 
     if not to_print:
         msg = "Empty string passed."
@@ -261,14 +262,17 @@ def open_file(file_name, mode='r', content=None, print_file=0, close=0):
     :return Object: returns file handle within object of [ReturnValue]
         Type: object
     """
-    method_name = '##' + os.path.basename(__file__) + ':open_file: '
-    print method_name
-    ReturnValue.call_stack.append(method_name)
+    routine_name = '##' + os.path.basename(__file__) + ':open_file: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
 
-    check_params(tuple([file_name, mode, content, print_file, close]),
-                 tuple(['StringType', 'StringType', 'StringType', 'IntType',
-                        'IntType']),
-                 tuple([1, 0, 0, 0, 0]))
+    cp = check_params(tuple([file_name, mode, content, print_file, close]),
+                      tuple(['StringType', 'StringType', 'StringType', 'IntType'
+                            , 'IntType']),
+                      tuple([1, 0, 0, 0, 0]))
+
+    if (cp.call_status == call_fail) or (cp.call_status == call_err):
+        return ReturnValue(call_status=cp.call_status, msg=cp.msg)
 
     if print_file and mode.find('r') != -1:
         if os.path.isfile(file_name) and os.access(file_name, os.R_OK):
@@ -325,10 +329,10 @@ def open_file(file_name, mode='r', content=None, print_file=0, close=0):
     return ReturnValue(call_pass, val=val, msg=msg)
 
 
-def print_log(log_string, log_only=0):
+def print_log(log_string, log_only=1):
     """
-    Prints to console and logs to a file
-    :param log_only: will not print if 1
+    Prints to console and logs to a file. This routine is for logging only
+    :param log_only: will not print if has value != 0; Default: log_only=1
         Type: int
         Optional
         Read Only
@@ -339,29 +343,84 @@ def print_log(log_string, log_only=0):
     :return Object: return object of type [ReturnValue]
         Type: object
     """
-    method_name = '##' + os.path.basename(__file__) + ':print_log: '
-    print method_name
-    ReturnValue.call_stack.append(method_name)
+    routine_name = '##' + os.path.basename(__file__) + ':print_log: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
 
     if not log_string:
         msg = "Empty string passed."
         return ReturnValue(call_status=call_err, msg=msg)
 
-    tc = check_params(tuple([log_string]),
+    cp = check_params(tuple([log_string]),
                       tuple(['StringType']),
                       tuple([1]))
-    if (tc.call_status == call_fail) or (tc.call_status == call_err):
-        return ReturnValue(call_status=tc.call_status, msg=tc.msg)
+    if (cp.call_status == call_fail) or (cp.call_status == call_err):
+        return ReturnValue(call_status=cp.call_status, msg=cp.msg)
 
     if __name__ == "__main__":  # will always print when unit testing
-        log_only = 1
+        log_only = 0
 
     if log_only == 0:
-        print log_string
-    open_file(file_name='sam_modules_log.txt', mode='a+', content=log_string,
-              close=1)
+        print "Logging [%s]." % log_string
+    open_file(file_name='sam_modules_log.txt', mode='a+',
+              content=log_string+"\n", close=1)
     msg = 'Logged successfully.'
-    return ReturnValue(call_pass, val=1, msg=msg)
+    return ReturnValue(call_pass, msg=msg)
+
+
+def merge_sort(input_list, u=None):
+    """
+
+    :param u:
+    :param input_list:
+    """
+    pass
+    # if input_list.__len__() == 1:
+    #     return input_list
+    # elif input_list.__len__() == 2:
+    #     if input_list[0] > input_list[1]:
+    #         input_list[0], input_list[1] = input_list[1], input_list[0]
+    #     return
+    # else:
+    #     m = input_list.__len__() / 2
+    #     return merge_sort(input_list[:m-1])
+    #     return merge_sort(input_list[m+1:])
+
+        
+def binary_search(input_list, key, sort=0):
+    """
+    Sorts an unordered list.
+    :param sort:
+    :param input_list:
+    :param key:
+    :return:
+    """
+    routine_name = '##' + os.path.basename(__file__) + ':binary_search: '
+    print routine_name
+    ReturnValue.call_stack.append(routine_name)
+
+    if not input_list:
+        msg = "Empty input list passed."
+        return ReturnValue(call_status=call_err, msg=msg)
+
+    cp = check_params(tuple([input_list, key]),
+                      tuple(['ListType', 'IntType']),
+                      tuple([1, 1]))
+    if (cp.call_status == call_fail) or (cp.call_status == call_err):
+        return ReturnValue(call_status=cp.call_status, msg=cp.msg)
+
+    if sort:
+        merge_sort(input_list=input_list)
+    lower = 0
+    upper = input_list.__len__()
+
+    while lower < upper:
+        if input_list[(lower + upper)/2] == key:
+            return ReturnValue(call_status=call_pass, val=(lower + upper)/2)
+        elif input_list[(lower + upper)/2] < key:
+            lower = (lower + upper)/2
+        else:
+            upper = (lower + upper)/2
 
 
 if __name__ == "__main__":  # for unit testing purposes only; will not execute
@@ -371,7 +430,7 @@ if __name__ == "__main__":  # for unit testing purposes only; will not execute
     # print user_input.call_stack
     # print user_input.call_status
     # print user_input.msg
-    #print user_input.val
+    # print user_input.val
 
     # print str_input("Enter a string: ")
     # from time import ctime
@@ -380,11 +439,13 @@ if __name__ == "__main__":  # for unit testing purposes only; will not execute
     # print f.call_status
     # print f.msg
 
-    pl = print_log('logging...', log_only=0)
+    # pl = print_log('hello...')
+    input_list = [0, 2, 4, 8, 9, 13, 14, 16]
+    #             0  1  2  3  4  5   6   7
+    #                            0   1   2
+    bv = binary_search(input_list, 0)
 
-    # f = open('hello.txt', 'w+')
-    #
-    # f.close()
-    # f = open('hello.txt', 'r')
-    # print f.read()
-    # f.write("hello")
+    # print bv.call_stack
+    print bv.call_status
+    print bv.val
+    print bv.msg
